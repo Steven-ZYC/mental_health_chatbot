@@ -4,6 +4,7 @@ from torchvision import models, transforms
 import cv2
 from PIL import Image
 import json
+from typing import Dict, List, Tuple, Optional  # Add this import for type hints
 
 
 class EmotionDetector:
@@ -135,7 +136,46 @@ class EmotionDetector:
         if self.cap:
             self.cap.release()
         cv2.destroyAllWindows()
-
+        
+    def verify_emotion_state(self, visual_emotion: str, visual_probabilities: Dict[str, float], 
+                            text_emotion: str, text_confidence: float) -> str:
+        """
+        验证并确定最终情绪状态，结合视觉和文本情绪分析结果
+        
+        Args:
+            visual_emotion: 从面部表情检测到的情绪
+            visual_probabilities: 面部表情情绪概率分布
+            text_emotion: 从文本分析检测到的情绪
+            text_confidence: 文本情绪分析的置信度
+            
+        Returns:
+            最终确定的情绪状态
+        """
+        # 获取视觉情绪的置信度
+        visual_confidence = visual_probabilities.get(visual_emotion, 0.0)
+        
+        # 如果视觉和文本情绪一致，直接返回
+        if visual_emotion == text_emotion:
+            return visual_emotion
+            
+        # 如果视觉情绪置信度明显高于文本情绪置信度
+        if visual_confidence > text_confidence + 0.2:
+            return visual_emotion
+            
+        # 如果文本情绪置信度明显高于视觉情绪置信度
+        if text_confidence > visual_confidence + 0.2:
+            return text_emotion
+            
+        # 如果两者置信度相近，优先考虑非中性情绪
+        if visual_emotion != 'neutral' and text_emotion == 'neutral':
+            return visual_emotion
+            
+        if text_emotion != 'neutral' and visual_emotion == 'neutral':
+            return text_emotion
+            
+        # 默认情况下，返回置信度较高的情绪
+        return visual_emotion if visual_confidence >= text_confidence else text_emotion
+    
     def run_as_library(self):
         """以独立程序模式运行"""
         if not self.start_camera():

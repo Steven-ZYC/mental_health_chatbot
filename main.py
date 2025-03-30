@@ -161,7 +161,7 @@ class MentalHealthChatbot:
                                 continue
                     
                     # 获取用户输入
-                    user_input = input("你: ").strip()
+                    user_input = input("You: ").strip()
                     if not user_input:
                         continue
                         
@@ -172,7 +172,7 @@ class MentalHealthChatbot:
                     
                     # 处理输入并生成响应
                     response = self.process_user_input(user_input, visual_emotion_data)
-                    print(f"chatbot: {response}\n")
+                    print(f"Chatbot: {response}\n")
             else:
                 # 开发者模式使用非阻塞式输入
                 input_buffer = ""
@@ -266,18 +266,76 @@ class MentalHealthChatbot:
             # 检测文本情绪
             text_emotion, text_confidence = self.language_processor.detect_text_emotion(user_input)
             
+            # 获取上一次的情绪状态（如果有）
+            previous_emotion = None
+            if self.conversation_history:
+                previous_emotion = self.conversation_history[-1].get('emotion')
+            
+            # 检查用户是否直接表达了情绪
+            explicit_emotions = {
+                'sad': ['sad', 'unhappy', 'depressed', 'down', 'blue', 'gloomy', 'miserable', 'tired', 'exhausted', 'fatigue'],
+                'angry': ['angry', 'mad', 'furious', 'irritated', 'annoyed', 'frustrated'],
+                'happy': ['happy', 'glad', 'joyful', 'excited', 'pleased', 'delighted', 'cheerful'],
+                'fear': ['scared', 'afraid', 'fearful', 'terrified', 'anxious', 'worried', 'nervous'],
+                'surprise': ['surprised', 'shocked', 'amazed', 'astonished', 'stunned'],
+                'disgust': ['disgusted', 'revolted', 'repulsed', 'gross'],
+                'neutral': ['neutral', 'okay', 'fine', 'alright', 'normal']
+            }
+            
+            # 检查用户输入是否直接包含情绪词
+            user_explicit_emotion = None
+            lower_input = user_input.lower()
+            
+            # 特殊情况处理：疲惫通常表示悲伤情绪
+            if any(word in lower_input for word in ['tired', 'exhausted', 'fatigue', 'so tired']):
+                user_explicit_emotion = 'sad'
+                text_confidence = 0.9
+                text_emotion = 'sad'
+            else:
+                # 常规情绪检测
+                for emotion, keywords in explicit_emotions.items():
+                    if any(keyword in lower_input for keyword in keywords):
+                        user_explicit_emotion = emotion
+                        text_confidence = 0.9  # 提高用户明确表达情绪的置信度
+                        text_emotion = emotion
+                        break
+            
             # 检查危机指标
             crisis_indicators = self.language_processor.extract_crisis_indicators(user_input)
             
             # 验证情绪状态
             final_emotion = text_emotion
             if visual_emotion_data and 'emotion' in visual_emotion_data and 'probabilities' in visual_emotion_data:
-                final_emotion = self.emotion_detector.verify_emotion_state(
-                    visual_emotion_data['emotion'],
-                    visual_emotion_data['probabilities'],
-                    text_emotion,
-                    text_confidence
-                )
+                try:
+                    # 如果用户明确表达了情绪，优先使用用户表达的情绪
+                    if user_explicit_emotion:
+                        final_emotion = user_explicit_emotion
+                    else:
+                        final_emotion = self.emotion_detector.verify_emotion_state(
+                            visual_emotion_data['emotion'],
+                            visual_emotion_data['probabilities'],
+                            text_emotion,
+                            text_confidence
+                        )
+                except AttributeError:
+                    # 如果方法不存在，继续使用文本情绪或上一次的情绪
+                    print("Warning: Emotion verification function is not available, will use text emotion analysis only")
+                    # 如果用户明确表达了情绪，优先使用用户表达的情绪
+                    if user_explicit_emotion:
+                        final_emotion = user_explicit_emotion
+                    # 如果文本情绪是neutral且有上一次的情绪，使用上一次的情绪
+                    elif text_emotion == 'neutral' and previous_emotion and previous_emotion != 'neutral':
+                        final_emotion = previous_emotion
+                        print(f"Using previous emotion state: {final_emotion}")
+                    else:
+                        final_emotion = text_emotion
+            elif user_explicit_emotion:
+                # 如果没有视觉数据但用户明确表达了情绪
+                final_emotion = user_explicit_emotion
+            # 如果文本情绪是neutral且有上一次的情绪，使用上一次的情绪
+            elif text_emotion == 'neutral' and previous_emotion and previous_emotion != 'neutral':
+                final_emotion = previous_emotion
+                print(f"Using previous emotion state: {final_emotion}")
             
             # 生成响应
             response = self.response_generator.generate_response(
@@ -301,7 +359,9 @@ class MentalHealthChatbot:
             return response
         except Exception as e:
             print(f"处理用户输入时出错: {str(e)}")
-            return "抱歉，我在处理您的消息时遇到了问题。请再试一次。"
+            import traceback
+            traceback.print_exc()
+            return "I'm sorry, I encountered a problem processing your message. Please try again."
 
 def main():
     try:

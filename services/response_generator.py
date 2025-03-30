@@ -28,17 +28,24 @@ class ResponseGenerator:
         question = random.choice(emotion_responses['questions'])
         coping_strategy = self._get_coping_strategy(emotion)
         
+        # 使用对话历史进行上下文感知响应
+        if conversation_history and len(conversation_history) > 1:
+            # 检查是否有情绪变化
+            prev_emotion = conversation_history[-2].get('emotion', 'neutral')
+            if prev_emotion != emotion:
+                validation = f"I notice your feelings have shifted from {prev_emotion} to {emotion}. {validation}"
+        
         # Combine components into final response
         response = f"{validation} {question} {coping_strategy}"
         
         return response
     
-    def _generate_crisis_response(self, crisis_indicators: List[str]) -> str:
-        """Generate a response for crisis situations."""
-        # Get the most severe crisis indicator
+    def _generate_crisis_response(self, Crisis_indicators: List[str]) -> str:
+        """Generate a response for Crisis situations."""
+        # Get the most severe Crisis indicator
         priority_order = ['self_harm', 'violence', 'emergency']
         selected_indicator = next(
-            (indicator for indicator in priority_order if indicator in crisis_indicators),
+            (indicator for indicator in priority_order if indicator in Crisis_indicators),
             crisis_indicators[0]
         )
         
@@ -53,7 +60,7 @@ class ResponseGenerator:
             helpline = self.support_resources['crisis_lines']['domestic_violence']
             response += f"\n\nDomestic Violence Hotline: {helpline}"
         
-        # Add general crisis text line
+        # Add general Crisis text line
         response += f"\nCrisis Text Line: {self.support_resources['crisis_lines']['crisis_text_line']}"
         
         return response
