@@ -1,7 +1,3 @@
-
-## 2. 简体中文版 README_zh_CN.md
-
-```markdown:h%3A%5C%5B1%5DEdUHK%5COneDrive%20-%20The%20Education%20University%20of%20Hong%20Kong%5C%5B1%5DEdUHK%20Y1%20S2%5CINT2093%20%20n%20network%5Cgroup%20project%5Cbrandnew_test%5CREADME_zh_CN.md
 # 心理健康支持聊天机器人
 
 [English](README.md) | [简体中文](README_zh_CN.md) | [香港繁體中文](README_zh_HK.md)
@@ -65,10 +61,12 @@
 
 ## 系统要求
 
-- Python 3.8+
-- PyTorch 2.0.1
-- OpenCV 4.7.0
-- CUDA兼容GPU（可选，用于更快的性能）
+- Python 3.9
+- CUDA 11.6
+- torch 11.2+cu116
+- torchaudio 0.12.0+cu116
+- torchvision 0.13.0+cu116
+- OpenCV 4.7.0+
 
 ## 安装指南
 

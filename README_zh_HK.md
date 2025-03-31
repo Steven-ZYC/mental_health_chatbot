@@ -61,10 +61,12 @@
 
 ## 系統要求
 
-- Python 3.8+
-- PyTorch 2.0.1
-- OpenCV 4.7.0
-- CUDA兼容GPU（可選，用於更快的性能）
+- Python 3.9
+- CUDA 11.6
+- torch 11.2+cu116
+- torchaudio 0.12.0+cu116
+- torchvision 0.13.0+cu116
+- OpenCV 4.7.0+
 
 ## 安裝指南
 
