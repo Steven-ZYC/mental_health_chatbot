@@ -1,26 +1,72 @@
 # Mental Health Support Chatbot
 
-A conversational AI system designed to provide mental health support through emotion detection and responsive dialogue.
+[English](README.md) | [简体中文](README_zh_CN.md) | [香港繁體中文](README_zh_HK.md)
 
-## Features
+An AI-based conversational system designed to provide mental health support through emotion detection and responsive dialogue.
+
+## Core Features
 
 - **Dual-mode Emotion Analysis**: Combines facial expression recognition and text sentiment analysis
 - **Real-time Facial Emotion Detection**: Uses computer vision to detect emotions from facial expressions
 - **Text-based Emotion Analysis**: Analyzes emotional content in user messages
 - **Crisis Indicator Detection**: Identifies potential mental health crisis signals
-- **Conversation History**: Maintains context for more relevant responses
+- **Conversation History Management**: Maintains context for more relevant responses
 - **Two Operating Modes**:
   - User Mode: Simplified interface for regular users
   - Developer Mode: Advanced interface with real-time metrics and debugging information
 
-## Requirements
+## Technical Implementation
+
+### 1. Emotion Recognition Model (EmotionDetector)
+
+- **Deep Learning Architecture**: ResNet-18 based convolutional neural network
+  - Modified ResNet-18 model, adapted for grayscale image input (single channel)
+  - Output layer adjusted for 7-class emotion classification (happy, neutral, sad, surprise, angry, disgust, fear)
+  
+- **Model Training and Optimization**:
+  - Implemented using PyTorch framework
+  - Supports CPU and CUDA acceleration (automatically detects available devices)
+  - Model weights stored in `models/best_model.pth`
+
+- **Face Detection**:
+  - Uses OpenCV's Haar cascade classifier for face detection
+  - Real-time video frame processing and emotion probability visualization
+
+### 2. Language Processing System (LanguageProcessor)
+
+- **Text Emotion Analysis Algorithm**:
+  - Based on keyword matching and sentiment intensity analysis
+  - Sentiment intensity assessment based on exclamation marks, capitalization, letter repetition, and intensity words
+  
+- **Crisis Indicator Extraction**:
+  - Identifies potential crisis situations based on predefined keywords
+  - Supports multiple crisis category recognition (self-harm, violence, emergency, etc.)
+
+### 3. Response Generation System (ResponseGenerator)
+
+- **Context-aware Responses**:
+  - Generates personalized responses based on current emotional state and conversation history
+  - Emotion change detection and corresponding response adjustment
+  
+- **Crisis Response Mechanism**:
+  - Priority-ordered crisis response strategy
+  - Integrated support resources and helpline information
+
+### 4. Multimodal Emotion Fusion
+
+- **Emotion State Verification Algorithm**:
+  - Combines visual and textual emotion analysis results
+  - Confidence-based weight allocation
+  - Non-neutral emotion priority strategy
+
+## System Requirements
 
 - Python 3.8+
-- PyTorch
-- OpenCV
+- PyTorch 2.0.1
+- OpenCV 4.7.0
 - CUDA-compatible GPU (optional, for faster performance)
 
-## Installation
+## Installation Guide
 
 1. Clone the repository:
 ```bash
