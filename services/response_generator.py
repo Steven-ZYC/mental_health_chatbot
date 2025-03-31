@@ -13,7 +13,7 @@ class ResponseGenerator:
                          crisis_indicators: List[str],
                          conversation_history: Optional[List[Dict[str, str]]] = None) -> str:
         """Generate an empathetic response based on user input and emotional state."""
-        # Check for crisis indicators first
+        # Check for Crisis indicators first
         if crisis_indicators:
             return self._generate_crisis_response(crisis_indicators)
         
@@ -40,12 +40,12 @@ class ResponseGenerator:
         
         return response
     
-    def _generate_crisis_response(self, Crisis_indicators: List[str]) -> str:
+    def _generate_crisis_response(self, crisis_indicators: List[str]) -> str:
         """Generate a response for Crisis situations."""
         # Get the most severe Crisis indicator
         priority_order = ['self_harm', 'violence', 'emergency']
         selected_indicator = next(
-            (indicator for indicator in priority_order if indicator in Crisis_indicators),
+            (indicator for indicator in priority_order if indicator in crisis_indicators),
             crisis_indicators[0]
         )
         
