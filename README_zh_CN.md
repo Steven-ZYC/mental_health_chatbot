@@ -23,6 +23,11 @@
   - 修改后的ResNet-18模型，适应灰度图像输入（单通道）
   - 输出层调整为7类情绪分类（happy, neutral, sad, surprise, angry, disgust, fear）
   
+- **数据集**：
+  - 使用FER-2013（面部表情识别2013）数据集进行训练
+  - 包含35,887张面部表情灰度图像，分为7种情绪类别
+  - 图像尺寸为48x48像素
+
 - **模型训练与优化**：
   - 使用PyTorch框架实现
   - 支持CPU和CUDA加速（自动检测可用设备）
@@ -74,3 +79,38 @@
 ```bash
 git clone <repository-url>
 cd <repository-directory>
+2. 安装所需包：
+```bash
+pip install -r requirements.txt
+ ```
+```
+
+3. 下载数据集（用于模型训练）：
+   
+   - 预训练模型权重已包含在 models/best_model.pth 中
+   - 如果您想重新训练模型，需要下载FER-2013数据集
+   - 从 Kaggle FER-2013 下载
+   - 将数据集解压到 archive 文件夹，结构如下：
+     ```plaintext
+     archive/
+     ├── train/
+     │   ├── angry/
+     │   ├── disgust/
+     │   ├── fear/
+     │   ├── happy/
+     │   ├── neutral/
+     │   ├── sad/
+     │   └── surprise/
+     └── test/
+         ├── angry/
+         ├── disgust/
+         ├── fear/
+         ├── happy/
+         ├── neutral/
+         ├── sad/
+         └── surprise/
+      ```
+4. 运行应用：
+```bash
+python main.py
+ ```

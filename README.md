@@ -23,6 +23,11 @@ An AI-based conversational system designed to provide mental health support thro
   - Modified ResNet-18 model, adapted for grayscale image input (single channel)
   - Output layer adjusted for 7-class emotion classification (happy, neutral, sad, surprise, angry, disgust, fear)
   
+- **Dataset**: 
+  - Trained on the FER-2013 (Facial Expression Recognition 2013) dataset
+  - Contains 35,887 grayscale images of facial expressions categorized into 7 emotions
+  - Images are 48x48 pixels in size
+
 - **Model Training and Optimization**:
   - Implemented using PyTorch framework
   - Supports CPU and CUDA acceleration (automatically detects available devices)
@@ -36,11 +41,11 @@ An AI-based conversational system designed to provide mental health support thro
 
 - **Text Emotion Analysis Algorithm**:
   - Based on keyword matching and sentiment intensity analysis
-  - Sentiment intensity assessment based on exclamation marks, capitalization, letter repetition, and intensity words
+  - Sentiment intensity assessment based on exclamation marks, capitalization, letter repetition, and intensity vocabulary
   
 - **Crisis Indicator Extraction**:
   - Identifies potential crisis situations based on predefined keywords
-  - Supports multiple crisis category recognition (self-harm, violence, emergency, etc.)
+  - Supports multiple crisis category recognition (self-harm, violence, emergencies, etc.)
 
 ### 3. Response Generation System (ResponseGenerator)
 
@@ -49,8 +54,8 @@ An AI-based conversational system designed to provide mental health support thro
   - Emotion change detection and corresponding response adjustment
   
 - **Crisis Response Mechanism**:
-  - Priority-ordered crisis response strategy
-  - Integrated support resources and helpline information
+  - Priority-based crisis response strategies
+  - Integration of support resources and helpline information
 
 ### 4. Multimodal Emotion Fusion
 
@@ -75,3 +80,38 @@ An AI-based conversational system designed to provide mental health support thro
 git clone <repository-url>
 cd <repository-directory>
 ```
+2. Install required packages:
+```bash
+pip install -r requirements.txt
+ ```
+```
+3. Download dataset (for model training):
+   
+   - The pre-trained model weights are included in models/best_model.pth
+   - If you want to retrain the model, you need to download the FER-2013 dataset
+   - Download from Kaggle FER-2013
+   - Extract the dataset to the archive folder with the following structure:
+     ```plaintext
+     archive/
+     ├── train/
+     │   ├── angry/
+     │   ├── disgust/
+     │   ├── fear/
+     │   ├── happy/
+     │   ├── neutral/
+     │   ├── sad/
+     │   └── surprise/
+     └── test/
+         ├── angry/
+         ├── disgust/
+         ├── fear/
+         ├── happy/
+         ├── neutral/
+         ├── sad/
+         └── surprise/
+      ```
+4. Run the application:
+
+```bash
+python main.py
+ ```
